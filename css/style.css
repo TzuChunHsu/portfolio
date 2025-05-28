@@ -1375,7 +1375,7 @@ nav {
   position: relative;
   width: 150px;
   height: 130px;
-  margin: -1.6px;
+  margin: 15px;
 }
 
 .skill-cadre {
@@ -2428,8 +2428,10 @@ footer p {
   }
 
   .skills-container {
-    display: none !important;
+    display: flex !important; /* 確保它是可見的，並且是 flex 容器 */
+    flex-wrap: wrap;        /* 允許技能圖示換行 */
   }
+  
 
   .skills_category {
     width: 60%;
