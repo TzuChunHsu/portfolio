@@ -1052,7 +1052,7 @@ nav {
   height: 40px;
   display: flex;
   align-items: center;
-  margin-bottom: auto;
+  margin-bottom: 1rem;
 }
 
 .foundation_card [data-title] {
