@@ -1467,7 +1467,7 @@ nav {
   flex-direction: column;
   justify-content: space-between;
   padding: 30px;
-  opacity: 0.5;
+  opacity: 0.8; /*原本太暗*/
   transform: rotate(270deg);
   transition: opacity 0.2s ease;
 }
