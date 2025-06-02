@@ -3073,20 +3073,20 @@ footer p {
   background-color: #2c3437;
   color: white;
   border: none;
+  width: 21rem;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: left;
+  justify-content: left;
   transition: 250ms;
   white-space: nowrap;
   outline: none;
   min-width: 7.5rem;
   line-height: 1.2;
   height: 2.5rem;
-  min-width: 7.5rem;
   padding-inline-start: 5px;
   padding-inline-end: 5px;
 }
@@ -3098,7 +3098,7 @@ footer p {
 .copy-message {
   position: absolute;
   left: 0;
-  width: 90%; /* 訊息寬度與按鈕保持一致 */
+  width: 21rem; /* 訊息寬度與按鈕保持一致 */
   background-color: #2c3437;
   color: white;
   text-align: center;
