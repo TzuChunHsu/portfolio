@@ -452,4 +452,10 @@ function copyText() {
     setTimeout(() => {
       copyMessage.style.display = "none";
     }, 1500); // Hide after 1.5 seconds
+
+    const copyMessage2 = document.getElementById("copyMessage2");
+    copyMessage2.style.display = "inline";
+    setTimeout(() => {
+      copyMessage2.style.display = "none";
+    }, 1500); // Hide after 1.5 seconds
   }
