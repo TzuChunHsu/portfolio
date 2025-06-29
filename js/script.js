@@ -312,13 +312,23 @@ window.addEventListener("scroll", function () {
     const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
     gradientLine.style.height = newHeight + "px";
 });
+window.addEventListener("scroll", function () {
+    const gradientLine = document.querySelector(".gradient-line-green");
+    const scrollPosition = window.scrollY;
+
+    const maxHeight = 300;
+    const offset = 1900;
+
+    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
+    gradientLine.style.height = newHeight + "px";
+});
 
 window.addEventListener("scroll", function () {
     const gradientLine = document.querySelector(".gradient-line-gop");
     const scrollPosition = window.scrollY;
 
     const maxHeight = 300;
-    const offset = 2150;
+    const offset = 2350;
 
     const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
     gradientLine.style.height = newHeight + "px";
@@ -329,7 +339,7 @@ window.addEventListener("scroll", function () {
     const scrollPosition = window.scrollY;
 
     const maxHeight = 300;
-    const offset = 2500;
+    const offset = 2700;
 
     const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
     gradientLine.style.height = newHeight + "px";
@@ -340,7 +350,7 @@ window.addEventListener("scroll", function () {
     const scrollPosition = window.scrollY;
 
     const maxHeight = 300;
-    const offset = 2850;
+    const offset = 3150;
 
     const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
     gradientLine.style.height = newHeight + "px";
