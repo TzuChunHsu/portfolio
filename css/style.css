@@ -1156,6 +1156,20 @@ nav {
   border-radius: 15px;
 }
 
+.gradient-line-green {
+  background: linear-gradient(#56d364,
+      #196c2e 20%,
+      #2c682c 60%,
+      #2ea043 70%,
+      #56d364);
+  margin-left: calc((40px / 2) - (3px / 2));
+  margin-right: calc((40px / 2) - (3px / 2));
+  box-shadow: 0px 5px 8px #429642;
+  width: 3px;
+  height: 0px;
+  border-radius: 15px;
+}
+
 .experience_container_info {
   width: calc(100% - 40px);
 }
