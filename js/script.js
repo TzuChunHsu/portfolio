@@ -1,471 +1,232 @@
-const cadre = document.querySelector('.cadre');
-const hoverEffect = document.querySelector('.hover-effect');
+(() => {
+    'use strict';
 
-cadre.addEventListener('mousemove', (event) => {
-    const rect = cadre.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    hoverEffect.style.transform = `translate(${x - 50}px, ${y - 50}px)`;
-});
+    // Runs a function at most once per animation frame (used for scroll/resize).
+    const onFrame = (fn) => {
+        let queued = false;
+        return () => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => {
+                queued = false;
+                fn();
+            });
+        };
+    };
 
-cadre.addEventListener('mouseleave', () => {
-    hoverEffect.style.transform = 'translate(-150%, -150%)';
-});
+    /* ---------- Sticky header: hides inside the hero, slides back in after it ---------- */
 
-const boxes = document.querySelectorAll('.box');
+    const header = document.querySelector('#header');
+    const hero = document.querySelector('#hero');
+    const menu = document.querySelector('#menu');
+    const toggle = document.querySelector('.toggle-menu');
 
-const checkScroll = () => {
-    boxes.forEach((box) => {
-        const boxPosition = box.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
+    const setMenu = (open) => {
+        menu.classList.toggle('show', open);
+        toggle.classList.toggle('active', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        const icon = toggle.querySelector('i');
+        icon.classList.toggle('fa-bars', !open);
+        icon.classList.toggle('fa-xmark', open);
+    };
 
-        if (boxPosition < windowHeight - 100) {
-            box.classList.add('visible');
-        } else {
-            box.classList.remove('visible');
-        }
-    });
-};
-
-window.addEventListener('scroll', checkScroll);
-checkScroll();
-
-const header = document.querySelector('header');
-const heroSection = document.querySelector('#hero');
-
-function checkHeaderScroll() {
-    const heroHeight = heroSection.offsetHeight;
-    if (window.scrollY === 0) {
-        header.classList.remove('sticky');
-        header.classList.remove('sticky-return');
-    } else {
-        if (window.scrollY >= heroHeight) {
+    const checkHeaderScroll = () => {
+        const y = window.scrollY;
+        const wasSticky = header.classList.contains('sticky');
+        if (y === 0) {
+            header.classList.remove('sticky', 'sticky-return');
+        } else if (y >= hero.offsetHeight) {
             header.classList.add('sticky');
             header.classList.remove('sticky-return');
         } else {
             header.classList.remove('sticky');
             header.classList.add('sticky-return');
         }
-    }
-}
+        if (wasSticky !== header.classList.contains('sticky')) setMenu(false);
+    };
 
-window.addEventListener('scroll', checkHeaderScroll);
-checkHeaderScroll();
-
-const links = document.querySelectorAll('.navbar_item_link'); 
-const sections = document.querySelectorAll('section');
-
-function highlightLinkOnScroll() {
-    const scrollPosition = window.scrollY;
-
-    sections.forEach((section, index) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-
-        if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100) {
-            links.forEach(link => link.classList.remove('active'));
-            links.forEach(link => {
-                if (link.getAttribute('href') === `#${section.id}`) {
-                    link.classList.add('active'); 
-                }
-            });
+    toggle.addEventListener('click', () => setMenu(!menu.classList.contains('show')));
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('show')) {
+            setMenu(false);
+            toggle.focus();
         }
     });
-}
-
-window.addEventListener('scroll', highlightLinkOnScroll);
-highlightLinkOnScroll();
-
-const bluePulse1 = document.querySelector("#blue-pulse-1");
-
-function animateBluePulse1() {
-    const startX1 = 83, startY1 = 320, startX2 = 83, startY2 = 415;
-    const targetX1 = 400, targetY1 = 83, targetX2 = 350, targetY2 = 133.75;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1400;
-    let step = 0;
-    const steps = 110;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            bluePulse1.setAttribute("x1", x1);
-            bluePulse1.setAttribute("y1", y1);
-            bluePulse1.setAttribute("x2", x2);
-            bluePulse1.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animateBluePulse1, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animateBluePulse1();
-
-
-const bluePulse2 = document.querySelector("#blue-pulse-2");
-
-function animateBluePulse2() {
-    const startX1 = 83, startY1 = 267.5, startX2 = 83, startY2 = 415;
-    const targetX1 = 400, targetY1 = 83, targetX2 = 350, targetY2 = 133.75;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1400;
-    let step = 0;
-    const steps = 160;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            bluePulse2.setAttribute("x1", x1);
-            bluePulse2.setAttribute("y1", y1);
-            bluePulse2.setAttribute("x2", x2);
-            bluePulse2.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animateBluePulse2, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animateBluePulse2();
-
-
-const pinkPulse1 = document.querySelector("#pink-pulse-1");
-
-function animatePinkPulse1() {
-    const startX1 = 412, startY1 = 264, startX2 = 412, startY2 = 304;
-    const targetX1 = 400, targetY1 = 83, targetX2 = 350, targetY2 = 133.75;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1400;
-    let step = 0;
-    const steps = 50;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            pinkPulse1.setAttribute("x1", x1);
-            pinkPulse1.setAttribute("y1", y1);
-            pinkPulse1.setAttribute("x2", x2);
-            pinkPulse1.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animatePinkPulse1, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animatePinkPulse1();
-
-
-const pinkGradient2 = document.querySelector("#pink-pulse-2");
-
-function animatePinkPulse2() {
-    const startX1 = 490, startX2 = 490, startY1 = 266, startY2 = 284;
-    const targetX1 = 479, targetX2 = 479, targetY1 = 120, targetY2 = 150;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1800;
-    let step = 0;
-    const steps = 110;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            pinkGradient2.setAttribute("x1", x1);
-            pinkGradient2.setAttribute("y1", y1);
-            pinkGradient2.setAttribute("x2", x2);
-            pinkGradient2.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animatePinkPulse2, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animatePinkPulse2();
-
-const orangePulse1 = document.querySelector("#orange-pulse-1");
-
-function animateOrangePulse1() {
-    const startX1 = 826, startY1 = 270, startX2 = 826, startY2 = 340;
-    const targetX1 = 360, targetY1 = 130, targetX2 = 400, targetY2 = 170;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1800;
-    let step = 0;
-    const steps = 105;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            orangePulse1.setAttribute("x1", x1);
-            orangePulse1.setAttribute("y1", y1);
-            orangePulse1.setAttribute("x2", x2);
-            orangePulse1.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animateOrangePulse1, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animateOrangePulse1();
-
-const orangePulse2 = document.querySelector("#orange-pulse-2");
-
-function animateOrangePulse2() {
-    const startX1 = 868, startY1 = 280, startX2 = 868, startY2 = 440;
-    const targetX1 = 300, targetY1 = 140, targetX2 = 400, targetY2 = 180;
-
-    const duration = 2200;
-    const delay = 500;
-    const repeatDelay = 1800;
-    let step = 0;
-    const steps = 170;
-
-    function updateGradient() {
-        if (step <= steps) {
-            const x1 = startX1 + (targetX1 - startX1) * (step / steps);
-            const y1 = startY1 + (targetY1 - startY1) * (step / steps);
-            const x2 = startX2 + (targetX2 - startX2) * (step / steps);
-            const y2 = startY2 + (targetY2 - startY2) * (step / steps);
-
-            orangePulse2.setAttribute("x1", x1);
-            orangePulse2.setAttribute("y1", y1);
-            orangePulse2.setAttribute("x2", x2);
-            orangePulse2.setAttribute("y2", y2);
-
-            step++;
-
-            requestAnimationFrame(updateGradient);
-        } else {
-            setTimeout(animateOrangePulse2, repeatDelay);
-        }
-    }
-
-    setTimeout(updateGradient, delay);
-}
-
-animateOrangePulse2();
-
-window.addEventListener("scroll", function () {
-    const gradientLine = document.querySelector(".gradient-line");
-    const scrollPosition = window.scrollY;
-
-    const maxHeight = 300;
-    const offset = 1550;
-
-    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
-    gradientLine.style.height = newHeight + "px";
-});
-window.addEventListener("scroll", function () {
-    const gradientLine = document.querySelector(".gradient-line-green");
-    const scrollPosition = window.scrollY;
-
-    const maxHeight = 300;
-    const offset = 1900;
-
-    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
-    gradientLine.style.height = newHeight + "px";
-});
-
-window.addEventListener("scroll", function () {
-    const gradientLine = document.querySelector(".gradient-line-gop");
-    const scrollPosition = window.scrollY;
-
-    const maxHeight = 300;
-    const offset = 2350;
-
-    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
-    gradientLine.style.height = newHeight + "px";
-});
-
-window.addEventListener("scroll", function () {
-    const gradientLine = document.querySelector(".gradient-line-hammad");
-    const scrollPosition = window.scrollY;
-
-    const maxHeight = 300;
-    const offset = 2700;
-
-    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
-    gradientLine.style.height = newHeight + "px";
-});
-
-window.addEventListener("scroll", function () {
-    const gradientLine = document.querySelector(".gradient-line-jorf");
-    const scrollPosition = window.scrollY;
-
-    const maxHeight = 300;
-    const offset = 3150;
-
-    const newHeight = Math.max(0, Math.min(scrollPosition - offset, maxHeight));
-    gradientLine.style.height = newHeight + "px";
-});
-
-
-const experienceCadres = document.querySelectorAll('.experience_cadre');
-
-experienceCadres.forEach((experienceCadre) => {
-    const backDiv = experienceCadre.querySelector('.back');
-
-    experienceCadre.addEventListener('mousemove', (e) => {
-        const { clientX: mouseX, clientY: mouseY } = e;
-        const { left, top, width, height } = experienceCadre.getBoundingClientRect();
-
-        const centerX = left + width / 1.1;
-        const centerY = top + height / 1.1;
-        const deltaX = (mouseX - centerX) / width * 2;
-        const deltaY = (mouseY - centerY) / height * 2;
-
-        experienceCadre.style.transform =
-            `perspective(1400px) rotateX(${deltaY}deg) rotateY(${deltaX}deg)`;
-
-        if (backDiv) {
-            const x = mouseX - left;
-            const y = mouseY - top;
-            backDiv.style.transform = `translate(${x - 50}px, ${y - 50}px)`;
-        }
+    document.addEventListener('click', (e) => {
+        if (menu.classList.contains('show') && !header.contains(e.target)) setMenu(false);
     });
 
-    experienceCadre.addEventListener('mouseleave', () => {
-        experienceCadre.style.transform = '';
-        if (backDiv) {
-            backDiv.style.transform = 'translate(-150%, -150%)';
-        }
+    /* ---------- Highlight the nav link of the section on screen ---------- */
+
+    const links = document.querySelectorAll('.navbar_item_link');
+    const sections = document.querySelectorAll('main section[id]');
+
+    const highlightLinkOnScroll = () => {
+        const y = window.scrollY;
+        sections.forEach((section) => {
+            if (y >= section.offsetTop - 100 && y < section.offsetTop + section.offsetHeight - 100) {
+                links.forEach((link) => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${section.id}`);
+                });
+            }
+        });
+    };
+
+    /* ---------- Fade/slide elements in as they enter the screen (.box) ---------- */
+
+    const boxes = document.querySelectorAll('.box');
+
+    const checkBoxes = () => {
+        const limit = window.innerHeight - 100;
+        boxes.forEach((box) => {
+            box.classList.toggle('visible', box.getBoundingClientRect().top < limit);
+        });
+    };
+
+    /* ---------- Experience: the colored line grows next to each job as you scroll ---------- */
+
+    const lines = document.querySelectorAll('.gradient-line');
+
+    const growLines = () => {
+        const reach = window.innerHeight * 0.85;
+        lines.forEach((line) => {
+            const max = line.nextElementSibling.offsetHeight - 32;
+            const height = Math.max(0, Math.min(reach - line.getBoundingClientRect().top, max));
+            line.style.height = `${height}px`;
+        });
+    };
+
+    const onScroll = onFrame(() => {
+        checkHeaderScroll();
+        highlightLinkOnScroll();
+        checkBoxes();
+        growLines();
     });
-});
 
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    checkHeaderScroll();
+    highlightLinkOnScroll();
+    checkBoxes();
+    growLines();
 
-function toggleSkills(button) {
-    const buttons = document.querySelectorAll('.skills_category button');
-    buttons.forEach((btn) => btn.classList.remove('active'));
+    /* ---------- Profile photo: glow follows the mouse ---------- */
 
-    button.classList.add('active');
+    const cadre = document.querySelector('.cadre');
+    const hoverEffect = document.querySelector('.hover-effect');
 
-    const category = button.getAttribute('data-category');
+    cadre.addEventListener('mousemove', (event) => {
+        const rect = cadre.getBoundingClientRect();
+        hoverEffect.style.transform = `translate(${event.clientX - rect.left - 50}px, ${event.clientY - rect.top - 50}px)`;
+    });
+    cadre.addEventListener('mouseleave', () => {
+        hoverEffect.style.transform = 'translate(-150%, -150%)';
+    });
 
+    /* ---------- Activities: card tilts toward the mouse with a soft light ---------- */
+
+    document.querySelectorAll('.experience_cadre').forEach((card) => {
+        const back = card.querySelector('.back');
+
+        card.addEventListener('mousemove', (e) => {
+            const { left, top, width, height } = card.getBoundingClientRect();
+            const deltaX = (e.clientX - (left + width / 1.1)) / width * 2;
+            const deltaY = (e.clientY - (top + height / 1.1)) / height * 2;
+            card.style.transform = `perspective(1400px) rotateX(${deltaY}deg) rotateY(${deltaX}deg)`;
+            back.style.transform = `translate(${e.clientX - left - 50}px, ${e.clientY - top - 50}px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            back.style.transform = 'translate(-150%, -150%)';
+        });
+    });
+
+    /* ---------- Skills: dim the hexagons outside the chosen category ---------- */
+
+    const categoryButtons = document.querySelectorAll('.skills_category button');
     const skills = document.querySelectorAll('.skill');
-    skills.forEach((skill) => {
-        if (skill.classList.contains(`not-${category}`)) {
-            skill.style.opacity = '0.3';
-        } else {
-            skill.style.opacity = '1';
-        }
-    });
-}
 
-document.querySelectorAll('.navbar_item_link').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+    categoryButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+            const category = button.dataset.category;
+            skills.forEach((skill) => {
+                const match = category === 'all' || skill.dataset.category.split(' ').includes(category);
+                skill.classList.toggle('is-dim', !match);
             });
-        }
+        });
     });
-});
 
-function toggleMenu(button) {
-    const menu = document.querySelector('.menu-items');
-    const icon = button.querySelector('i');
+    /* ---------- Copy email address ---------- */
 
-    if (menu.classList.contains('show')) {
-        menu.classList.remove('show');
-        icon.classList.remove('fa-xmark');
-        button.classList.remove('active');
-        icon.classList.add('fa-bars');
-    } else {
-        menu.classList.add('show');
-        icon.classList.remove('fa-bars');
-        button.classList.add('active');
-        icon.classList.add('fa-xmark');
+    const copyText = async (text) => {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch {
+            const input = document.createElement('textarea');
+            input.value = text;
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            input.remove();
+        }
+    };
+
+    document.querySelectorAll('[data-copy]').forEach((button) => {
+        const message = button.parentElement.querySelector('.copy-message');
+        button.addEventListener('click', () => {
+            copyText(button.dataset.copy);
+            message.classList.add('show');
+            setTimeout(() => message.classList.remove('show'), 1500);
+        });
+    });
+
+    /* ---------- Career: light pulses travel along the CPU traces ---------- */
+
+    // Each pulse moves its gradient from `from` to `to` ([x1, y1, x2, y2]) over `steps` frames.
+    const pulses = [
+        { id: 'blue-pulse-1', from: [83, 320, 83, 415], to: [400, 83, 350, 133.75], steps: 110, pause: 1400 },
+        { id: 'blue-pulse-2', from: [83, 267.5, 83, 415], to: [400, 83, 350, 133.75], steps: 160, pause: 1400 },
+        { id: 'pink-pulse-1', from: [412, 264, 412, 304], to: [400, 83, 350, 133.75], steps: 50, pause: 1400 },
+        { id: 'pink-pulse-2', from: [490, 266, 490, 284], to: [479, 120, 479, 150], steps: 110, pause: 1800 },
+        { id: 'orange-pulse-1', from: [826, 270, 826, 340], to: [360, 130, 400, 170], steps: 105, pause: 1800 },
+        { id: 'orange-pulse-2', from: [868, 280, 868, 440], to: [300, 140, 400, 180], steps: 170, pause: 1800 },
+    ];
+
+    const poweredBy = document.querySelector('.powered_by');
+
+    if (poweredBy && !reduceMotion && 'IntersectionObserver' in window) {
+        // Bumped whenever the CPU leaves or enters the screen so old loops stop.
+        let generation = 0;
+        const attrs = ['x1', 'y1', 'x2', 'y2'];
+
+        const animatePulse = (pulse, gen) => {
+            const gradient = document.getElementById(pulse.id);
+            let step = 0;
+            const update = () => {
+                if (gen !== generation) return;
+                const t = step / pulse.steps;
+                attrs.forEach((attr, i) => {
+                    gradient.setAttribute(attr, pulse.from[i] + (pulse.to[i] - pulse.from[i]) * t);
+                });
+                if (step++ < pulse.steps) {
+                    requestAnimationFrame(update);
+                } else {
+                    setTimeout(() => animatePulse(pulse, gen), pulse.pause);
+                }
+            };
+            setTimeout(update, 500);
+        };
+
+        new IntersectionObserver(([entry]) => {
+            generation++;
+            if (entry.isIntersecting) pulses.forEach((pulse) => animatePulse(pulse, generation));
+        }).observe(poweredBy);
     }
-}
-
-function copyText() {
-    // Text to be copied
-    const textToCopy = "Tzuchunhsu2002@gmail.com";
-
-    // Create a temporary input element
-    const tempInput = document.createElement("input");
-    tempInput.value = textToCopy;
-    document.body.appendChild(tempInput);
-
-    // Select and copy the text
-    tempInput.select();
-    document.execCommand("copy");
-
-    // Remove the temporary input element
-    document.body.removeChild(tempInput);
-
-    // Show "Copied!" message
-    const copyMessage = document.getElementById("copyMessage");
-    copyMessage.style.display = "inline";
-    setTimeout(() => {
-      copyMessage.style.display = "none";
-    }, 1500); // Hide after 1.5 seconds
-
-    const copyMessage2 = document.getElementById("copyMessage2");
-    copyMessage2.style.display = "inline";
-    setTimeout(() => {
-      copyMessage2.style.display = "none";
-    }, 1500); // Hide after 1.5 seconds
-  }
+})();
