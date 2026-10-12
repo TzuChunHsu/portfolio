@@ -16,6 +16,75 @@
         };
     };
 
+    /* ---------- Language: English (written in the HTML) or Traditional Chinese (js/zh-hant.js) ---------- */
+
+    const zhHant = window.ZH_HANT || {};
+    const langToggle = document.querySelector('.lang-toggle');
+    const enTitle = document.title;
+
+    // Remember each element's English text so switching back needs no second dictionary.
+    const translatable = [];
+    [['i18n', null], ['i18n-alt', 'alt'], ['i18n-label', 'aria-label']].forEach(([name, attr]) => {
+        document.querySelectorAll(`[data-${name}]`).forEach((el) => {
+            translatable.push({
+                el,
+                attr,
+                key: el.getAttribute(`data-${name}`),
+                en: attr ? el.getAttribute(attr) : el.innerHTML,
+            });
+        });
+    });
+
+    const setLang = (lang) => {
+        const zh = lang === 'zh';
+        const t = (key, en) => (zh && zhHant[key]) || en;
+
+        document.documentElement.lang = zh ? 'zh-Hant' : 'en';
+        document.title = t('meta.title', enTitle);
+        translatable.forEach(({ el, attr, key, en }) => {
+            if (attr) el.setAttribute(attr, t(key, en));
+            else el.innerHTML = t(key, en);
+        });
+
+        // The button offers the other language, written in that language.
+        langToggle.lang = zh ? 'en' : 'zh-Hant';
+        langToggle.title = zh ? 'Switch to English' : '切換為繁體中文';
+        langToggle.querySelector('.lang-toggle-text').textContent = zh ? 'EN' : '中文';
+
+        try {
+            localStorage.setItem('lang', lang);
+        } catch {
+            // Storage is blocked (private mode, etc.): the choice just isn't remembered.
+        }
+
+        // Keep ?lang=zh in the address bar so the Chinese view can be shared as a link.
+        try {
+            const url = new URL(window.location.href);
+            if (zh) url.searchParams.set('lang', 'zh');
+            else url.searchParams.delete('lang');
+            history.replaceState(null, '', url);
+        } catch {
+            // Some browsers refuse replaceState on file:// pages.
+        }
+    };
+
+    const startLang = () => {
+        const fromUrl = new URLSearchParams(window.location.search).get('lang');
+        if (fromUrl) return fromUrl;
+        try {
+            return localStorage.getItem('lang');
+        } catch {
+            return null;
+        }
+    };
+
+    if (startLang() === 'zh') setLang('zh');
+
+    langToggle.addEventListener('click', () => {
+        setLang(document.documentElement.lang === 'zh-Hant' ? 'en' : 'zh');
+        onScroll(); // Text lengths changed, so re-measure the scroll-driven parts.
+    });
+
     /* ---------- Sticky header: hides inside the hero, slides back in after it ---------- */
 
     const header = document.querySelector('#header');
@@ -27,7 +96,6 @@
         menu.classList.toggle('show', open);
         toggle.classList.toggle('active', open);
         toggle.setAttribute('aria-expanded', String(open));
-        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
         const icon = toggle.querySelector('i');
         icon.classList.toggle('fa-bars', !open);
         icon.classList.toggle('fa-xmark', open);

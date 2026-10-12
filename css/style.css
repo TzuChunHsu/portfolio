@@ -33,7 +33,8 @@ body {
   min-height: 100vh;
   background-color: var(--black-color);
   color: var(--white-color);
-  font-family: "Inter", sans-serif;
+  /* Inter has no Chinese glyphs, so Chinese text falls back to the system's Traditional Chinese font */
+  font-family: "Inter", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   font-optical-sizing: auto;
   line-height: 1.5;
   overflow-x: hidden;
@@ -336,6 +337,44 @@ section {
   position: absolute;
   top: 2px;
   right: -10px;
+}
+
+/* Language switch, pinned to the right end of the navbar */
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  height: 2.2rem;
+  margin-left: auto;
+  padding: 0 .9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5rem;
+  background-color: transparent;
+  color: var(--white-color);
+  font-size: .875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.lang-toggle i {
+  font-size: .9rem;
+  color: var(--mint);
+}
+
+.lang-toggle:hover {
+  border-color: var(--green-glow);
+  background-color: var(--border-color);
+}
+
+/* It needs JavaScript to work, so hide it without */
+html:not(.js) .lang-toggle {
+  display: none;
+}
+
+/* Negative tracking suits Latin headings but crowds Chinese characters */
+:lang(zh) :is(h1, h3, h5, h6, .foundation_card [data-title]) {
+  letter-spacing: normal;
 }
 
 /* =====================================================================
@@ -1103,14 +1142,27 @@ section {
   letter-spacing: 1px;
 }
 
-.experience_container_info p {
+.experience_container_info p,
+.experience_container_info .experience-highlights {
   margin: 1.5rem 0 0;
   font-size: 15px;
   font-weight: normal;
   letter-spacing: 1px;
+  line-height: 2;
 }
 
-.experience_container_info p strong {
+.experience_container_info .experience-highlights {
+  padding-inline-start: 1.25rem;
+  list-style: disc;
+}
+
+.experience_container_info .experience-highlights li + li {
+  margin-top: .75rem;
+}
+
+.experience_container_info .experience-highlights li::marker,
+.experience_container_info p strong,
+.experience_container_info .experience-highlights strong {
   color: var(--mint);
 }
 
@@ -1641,9 +1693,18 @@ footer i {
     gap: 0;
   }
 
-  .navbar::after {
-    content: "";
+  /* Same size as the burger on the other side, so the name stays centered */
+  .lang-toggle {
+    justify-content: center;
     width: 2.4rem;
+    height: 2.4rem;
+    margin-left: 0;
+    padding: 0;
+    font-size: .8rem;
+  }
+
+  .lang-toggle i {
+    display: none;
   }
 
   .toggle-menu {
@@ -1850,8 +1911,8 @@ footer i {
     font-size: 16px;
   }
 
-  .animated-item {
-    font-size: 2rem;
+  .hero .animated-item {
+    font-size: clamp(1.75rem, 9vw, 2rem);
   }
 
   .hero-desc {
@@ -1937,7 +1998,8 @@ footer i {
     font-size: 14px;
   }
 
-  .experience_container_info p {
+  .experience_container_info p,
+  .experience_container_info .experience-highlights {
     font-size: 14px;
     letter-spacing: .3px;
     line-height: 1.85;

@@ -15,8 +15,10 @@ python3 -m http.server 8765
 
 - `index.html`: all page content. Sections, in order: hero, About, Career, Experience, Skills, Projects, Activities, Contact.
 - `css/style.css`: styles and animations. It is mobile friendly, with breakpoints at 1000px (burger menu), 900px, 768px, and 500px.
-- `js/script.js`: sticky header, burger menu, scroll reveal (`.box`), timeline lines, photo glow, card tilt, skills filter, copy-email button, and the "Powered By" CPU pulses.
-- `images/skills/`: hexagon icons for the Skills section.
+- `js/script.js`: language switch, sticky header, burger menu, scroll reveal (`.box`), timeline lines, photo glow, card tilt, skills filter, copy-email button, and the "Powered By" CPU pulses.
+- `js/zh-hant.js`: the Traditional Chinese text for the language switch.
+- `images/icons/`: company and school logos, plus most Skills hexagon icons.
+- `images/skills/`: extra hexagon icons for skills that have no logo in `images/icons/`.
 - `images/special/`: photos, project screenshots, and the two project diagrams (`*.svg`).
 - `cv/`: resume PDFs. The download button links to `cv/Resume Tzu-Chun Hsu.pdf`.
 
@@ -24,6 +26,7 @@ python3 -m http.server 8765
 
 - **Hero rotating titles.** Edit the five `.animated-item` spans. The CSS animation is timed for exactly five (10s loop, 2s each).
 - **Skills.** Each hexagon is one `<li class="skill" data-category="...">`. Categories: `backend`, `frontend`, `data`, `devops`, `security`, and a tile can have several. With 52 tiles the desktop honeycomb fills evenly (rows of 6 / 7; full counts are 39, 45, 52, 58, 65...). Any other count still works, but the last row will be partly empty.
+- **English / 繁體中文.** The button at the top right switches languages and remembers the choice; `?lang=zh` opens the Chinese version directly. English is written in `index.html`. Text that changes carries `data-i18n="key"` (inner HTML), `data-i18n-alt` (image alt), or `data-i18n-label` (aria-label), and `js/zh-hant.js` holds the Chinese under the same key. When you edit or add English text, update its Chinese entry too; a missing key just shows the English.
 - **Projects.** The cards sit in two columns. On phones they collapse into one column ordered by each card's `style="--order: N"`, so keep those numbers in reading order when you add a card.
 
 ## Credits
